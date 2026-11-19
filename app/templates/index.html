@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mango Fruit Disease Detection | EfficientNetB0</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <div class="container nav-container">
+      <a href="#" class="brand">
+        <div class="brand-icon">🥭</div>
+        <div class="brand-text">
+          <h1>MangoDisease AI</h1>
+          <span>College Machine Learning Project</span>
+        </div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#howItWorks">How It Works</a></li>
+        <li><a href="#detectionSection">Detect Disease</a></li>
+        <li><a href="#diseasesSection">Disease Library</a></li>
+        <li><span class="nav-badge">EfficientNetB0 • 93.33% Acc</span></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="container hero-grid">
+      <div class="hero-content">
+        <div class="hero-badge-pill">
+          <span>🌿</span> Deep Learning Powered Agriculture
+        </div>
+        <h1 class="hero-title">
+          Mango Fruit <span class="highlight">Disease Detection</span> System
+        </h1>
+        <p class="hero-description">
+          An automated computer vision solution built with fine-tuned <strong>EfficientNetB0</strong>. Upload a saved photo or capture directly with your camera to instantly identify fungal or bacterial infections across 7 distinct categories.
+        </p>
+        
+        <div class="hero-metrics">
+          <div class="metric-item">
+            <div class="metric-value">93.33%</div>
+            <div class="metric-label">Test Set Accuracy</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-value">7</div>
+            <div class="metric-label">Disease Categories</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-value">224 × 224</div>
+            <div class="metric-label">AI Input Resolution</div>
+          </div>
+        </div>
+
+        <div class="hero-cta-group">
+          <a href="#detectionSection" class="btn-primary">
+            <span>📷</span> Start Disease Detection
+          </a>
+        </div>
+      </div>
+
+      <!-- Hero Visual Card -->
+      <div class="hero-visual">
+        <div class="hero-art-card">
+          <div class="hero-badge-tag">Trained Model</div>
+          
+          <!-- Custom Mango Graphic SVG -->
+          <svg class="mango-illustration-svg" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M100 48C98 32 108 20 120 16" stroke="#558B2F" stroke-width="5" stroke-linecap="round"/>
+            <path d="M102 36C122 24 150 28 158 40C152 56 126 62 102 36Z" fill="#7CB342" stroke="#33691E" stroke-width="2"/>
+            <path d="M105 38C126 36 142 41 152 43" stroke="#558B2F" stroke-width="1.5" stroke-linecap="round"/>
+            <defs>
+              <radialGradient id="mangoGrad" cx="35%" cy="30%" r="70%">
+                <stop offset="0%" stop-color="#FFF176" />
+                <stop offset="30%" stop-color="#FFD54F" />
+                <stop offset="65%" stop-color="#FF9800" />
+                <stop offset="90%" stop-color="#E65100" />
+                <stop offset="100%" stop-color="#C2410C" />
+              </radialGradient>
+              <filter id="fruitGlow" x="-10%" y="-10%" width="125%" height="125%">
+                <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#FF9800" flood-opacity="0.3"/>
+              </filter>
+            </defs>
+            <path d="M100 50C135 50 168 85 162 128C156 168 118 190 92 186C60 182 40 148 42 112C44 72 72 50 100 50Z" 
+                  fill="url(#mangoGrad)" filter="url(#fruitGlow)"/>
+            <ellipse cx="80" cy="88" rx="28" ry="18" transform="rotate(-30 80 88)" fill="#FFFFFF" fill-opacity="0.25"/>
+          </svg>
+
+          <div class="hero-card-caption">
+            <h4>Fine-Tuned EfficientNetB0</h4>
+            <p>Trained on authentic orchard dataset under Stage 1 & Stage 2 fine-tuning</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section class="section section-alt" id="howItWorks">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Workflow</span>
+        <h2 class="section-title">How The System Works</h2>
+        <p class="section-subtitle">
+          From image ingestion to deep neural inference, the pipeline delivers accurate disease identification in milliseconds.
+        </p>
+      </div>
+
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-number">01</div>
+          <div class="step-icon">📤</div>
+          <h3>Upload or Capture</h3>
+          <p>
+            Choose between uploading an existing photograph or capturing directly with your phone/laptop camera.
+          </p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-number">02</div>
+          <div class="step-icon">⚙️</div>
+          <h3>Smart AI Preprocessing</h3>
+          <p>
+            The image is automatically oriented, converted to RGB, and resized to 224 × 224 with aspect ratio preservation (no distortion).
+          </p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-number">03</div>
+          <div class="step-icon">📊</div>
+          <h3>Detailed Diagnosis</h3>
+          <p>
+            Receive predicted disease class, confidence score, pathogen details, recognizable symptoms, and agricultural management guidance.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Detection Section -->
+  <section class="section" id="detectionSection">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Interactive Detection</span>
+        <h2 class="section-title">Provide Mango Photograph</h2>
+        <p class="section-subtitle">
+          Choose an input option: Upload an image file from your device or use your camera.
+        </p>
+      </div>
+
+      <div class="detection-card">
+        
+        <!-- Two Input Options Tabs -->
+        <div class="input-tabs-nav">
+          <button type="button" class="input-tab-btn active" id="tabUploadBtn">
+            <span>📁</span> Upload from Device
+          </button>
+          <button type="button" class="input-tab-btn" id="tabCameraBtn">
+            <span>📷</span> Capture from Camera
+          </button>
+        </div>
+
+        <!-- Option 1: File Upload Panel -->
+        <div class="input-panel active" id="uploadPanel">
+          <div class="drop-zone" id="dropZone">
+            <div class="drop-zone-content">
+              <div class="upload-icon-circle">📁</div>
+              <h3 class="drop-title">Drag & drop your mango image here</h3>
+              <p class="drop-sub">or select a file from your computer or phone</p>
+              <button type="button" class="browse-btn" id="browseBtn">Browse Files</button>
+              <p class="file-hint">Supports JPG, JPEG, PNG, WEBP (Max: 16 MB)</p>
+            </div>
+            <input type="file" id="fileInput" accept="image/jpeg,image/png,image/jpg,image/webp" style="display: none;">
+          </div>
+        </div>
+
+        <!-- Option 2: Live Camera Panel -->
+        <div class="input-panel" id="cameraPanel">
+          <!-- Camera Inactive Box (User must click to start camera) -->
+          <div class="camera-start-box" id="cameraStartBox">
+            <div class="upload-icon-circle">📷</div>
+            <h3 class="drop-title">Ready to Capture Mango Photo</h3>
+            <p class="drop-sub">Position your camera directly over the mango fruit in good lighting</p>
+            <button type="button" class="camera-start-btn" id="startCameraBtn">
+              <span>📹</span> Open Camera
+            </button>
+            <p class="file-hint">Prefers rear camera on phones; uses webcam on laptops</p>
+          </div>
+
+          <!-- Camera Live Stream Wrapper -->
+          <div class="camera-stream-wrapper" id="cameraStreamWrapper">
+            <video id="cameraVideo" class="camera-video" autoplay playsinline muted></video>
+            
+            <!-- Viewfinder Target Guide -->
+            <div class="camera-overlay-guide">
+              <span class="camera-overlay-text">Align Mango Here</span>
+            </div>
+
+            <!-- Controls overlay -->
+            <div class="camera-controls-bar">
+              <button type="button" class="btn-camera-action" id="switchCameraBtn" title="Switch Camera">
+                🔄 Flip
+              </button>
+              <button type="button" class="btn-camera-capture" id="capturePhotoBtn" title="Take Photo">
+                📸
+              </button>
+              <button type="button" class="btn-camera-action" id="closeCameraBtn" title="Close Camera">
+                ✕ Close
+              </button>
+            </div>
+          </div>
+          
+          <!-- Hidden Canvas for snapshot extraction -->
+          <canvas id="cameraCanvas" style="display: none;"></canvas>
+        </div>
+
+        <!-- Image Preview Box (Applies to both Upload & Camera Capture) -->
+        <div class="preview-container" id="previewContainer">
+          <div class="preview-box">
+            <div class="preview-image-wrapper">
+              <img id="previewImg" src="" alt="Selected Preview">
+            </div>
+            <div class="preview-details">
+              <div class="preview-filename" id="previewFilename">image.jpg</div>
+              <div class="preview-meta-row">
+                <span class="preview-filesize" id="previewFilesize">0 KB</span>
+              </div>
+              <div class="ai-optimized-badge">
+                <span>✨</span> Image optimized for AI analysis (224 × 224 aspect-preserved)
+              </div>
+              <div class="preview-actions">
+                <button type="button" class="btn-sm-danger" id="retakeChangeBtn">
+                  <span>🔄</span> Change / Retake Photo
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Error Alert Box -->
+        <div class="alert-box" id="alertBox">
+          <span>⚠️</span>
+          <span id="alertText"></span>
+        </div>
+
+        <!-- Action Bar: Detect Button -->
+        <div class="detect-action-bar">
+          <button type="button" class="btn-primary btn-detect" id="detectBtn" disabled>
+            <span>🔍</span> Detect Disease
+          </button>
+        </div>
+
+        <!-- Loading Feedback -->
+        <div class="loading-box" id="loadingBox">
+          <div class="spinner"></div>
+          <div class="loading-text">Analyzing image with EfficientNetB0...</div>
+          <div class="loading-sub">Smart resizing, tensor conversion, and neural inference in progress</div>
+        </div>
+
+        <!-- Prediction Result Display -->
+        <div class="result-card-wrapper" id="resultCardWrapper">
+          <div class="result-card">
+            <!-- Result Header -->
+            <div class="result-header" id="resultHeader">
+              <div class="result-status-title">
+                <h3 id="resultDiseaseTitle">Disease Name</h3>
+                <p id="resultScientificName">Pathogen Name</p>
+              </div>
+              <div id="resultBadge" class="result-badge">
+                Status
+              </div>
+            </div>
+
+            <!-- Result Body -->
+            <div class="result-body">
+              <!-- Uploaded Image -->
+              <div class="result-image-display">
+                <img id="resultImg" src="" alt="Analyzed Mango Fruit">
+              </div>
+
+              <!-- Content & Metrics -->
+              <div class="result-info-content">
+                <!-- Optimization Info -->
+                <div class="res-specs-tag">
+                  <span>✨ <strong>AI Processing:</strong> Proportion-preserved resize from <span id="resOriginalDim"></span> to 224 × 224 × 3</span>
+                </div>
+
+                <!-- Confidence Meter -->
+                <div class="confidence-container">
+                  <div class="confidence-header">
+                    <span>Model Confidence</span>
+                    <span class="confidence-number" id="resultConfidence">0.0%</span>
+                  </div>
+                  <div class="confidence-progress-bar">
+                    <div class="confidence-progress-fill" id="resultConfidenceBar" style="width: 0%;"></div>
+                  </div>
+                </div>
+
+                <!-- Description -->
+                <div class="description-box">
+                  <h4><span>📖</span> Overview</h4>
+                  <p id="resultDescription">Description will appear here.</p>
+                </div>
+
+                <!-- Symptoms -->
+                <div class="symptoms-box">
+                  <h4><span>🔍</span> Key Symptoms</h4>
+                  <ul class="bullet-list" id="resultSymptoms"></ul>
+                </div>
+
+                <!-- Management Tips -->
+                <div class="management-box">
+                  <h4><span>🛡️</span> Recommended Action / Management</h4>
+                  <ul class="bullet-list" id="resultManagement"></ul>
+                </div>
+
+                <!-- Full Probability Breakdown Accordion -->
+                <div class="probs-container">
+                  <button type="button" class="probs-toggle" id="probsToggleBtn">
+                    <span>▼</span> Show All Class Probabilities
+                  </button>
+                  <div class="probs-list" id="probsList"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Responsible AI Disclaimer -->
+            <div class="ai-disclaimer">
+              <span>ℹ️</span>
+              <span>
+                <strong>AI Prediction Notice:</strong> This output represents an automated statistical inference generated by the trained EfficientNetB0 model. Results should serve as screening support and do not replace physical verification by an agricultural extension specialist.
+              </span>
+            </div>
+
+            <!-- Result Footer Actions -->
+            <div class="result-footer-actions">
+              <button type="button" class="btn-secondary" id="uploadAnotherBtn">
+                <span>🔄</span> Test Another Mango Image
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Supported Diseases Section -->
+  <section class="section section-alt" id="diseasesSection">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Botanical Reference</span>
+        <h2 class="section-title">Supported Mango Fruit Categories</h2>
+        <p class="section-subtitle">
+          The deep learning model is trained to recognize 7 distinct classes in the mango fruit lifecycle.
+        </p>
+      </div>
+
+      <div class="disease-cards-grid">
+        {% for name, info in diseases.items() %}
+        <div class="disease-card">
+          <div class="disease-card-header">
+            <div>
+              <div class="disease-card-title">{{ name }}</div>
+              <div class="disease-scientific">{{ info.scientific_name }}</div>
+            </div>
+            <span class="disease-badge-sm severity-{{ info.severity.lower() }}">
+              {{ info.severity }} Severity
+            </span>
+          </div>
+          <div class="disease-card-body">
+            <p>{{ info.description }}</p>
+            <div class="symptoms-mini-title">Observable Symptoms:</div>
+            <ul class="bullet-list">
+              {% for symptom in info.symptoms[:2] %}
+              <li>{{ symptom }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h3>Mango Fruit Disease Detection</h3>
+          <p>
+            A college academic machine learning project demonstrating transfer learning and computer vision using TensorFlow, Keras, and EfficientNetB0 for agricultural disease screening.
+          </p>
+        </div>
+        <div class="footer-info">
+          <h4>Technical Specifications</h4>
+          <ul>
+            <li><strong>Model:</strong> EfficientNetB0 (ImageNet Transfer Learning)</li>
+            <li><strong>Dataset:</strong> Amrapali Mango Fruit Diseases</li>
+            <li><strong>Validation / Test Accuracy:</strong> ~93.33%</li>
+            <li><strong>Frameworks:</strong> Python, Flask, TensorFlow, Keras, NumPy, Pillow</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Mango Fruit Disease Detection Project. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Main JavaScript File -->
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

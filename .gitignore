@@ -1,0 +1,30 @@
+# Virtual Environment
+venv/
+env/
+ENV/
+.env
+
+# Dataset directory (Too large for GitHub)
+dataset/
+
+# Upload directory cache (keep directory structure with .gitkeep)
+app/uploads/*
+!app/uploads/.gitkeep
+
+# Python cache & bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+
+# IDE & Editor configuration
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Training backups & temporary files
+training/train_backup.py
+*.log
+scratch/
