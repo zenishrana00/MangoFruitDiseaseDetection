@@ -1,4 +1,5 @@
 import os
+import gc
 import traceback
 import uuid
 from flask import Flask, render_template, request, jsonify, send_from_directory
@@ -6,6 +7,13 @@ from werkzeug.utils import secure_filename
 import tensorflow as tf
 import numpy as np
 from PIL import Image, ImageOps
+
+# Limit TensorFlow CPU threads to avoid memory bloat on low-RAM containers
+try:
+    tf.config.threading.set_inter_op_parallelism_threads(1)
+    tf.config.threading.set_intra_op_parallelism_threads(2)
+except Exception:
+    pass
 
 # ---------------------------------------------------------
 # App Initialization & Configuration
@@ -180,27 +188,38 @@ def preprocess_image_smart(image_path):
     Automatic Image Resolution Adjustment & Aspect Ratio Preservation:
     1. Loads image with PIL
     2. Corrects EXIF camera orientation (ImageOps.exif_transpose)
-    3. Converts to 3-channel RGB (handles RGBA, grayscale, etc.)
-    4. Resizes to 224x224 preserving proportions using letterbox/padding (ImageOps.pad)
+    3. Downsamples oversized phone camera photos to max 1024px to prevent
+       RAM overflow on low-memory servers (e.g. Render 512MB)
+    4. Converts to 3-channel RGB (handles RGBA, grayscale, etc.)
+    5. Resizes to 224x224 preserving proportions using letterbox/padding (ImageOps.pad)
        to avoid stretching or distorting the mango fruit.
-    5. Converts to NumPy array and adds batch dimension (1, 224, 224, 3)
+    6. Converts to NumPy array and adds batch dimension (1, 224, 224, 3)
     """
     with Image.open(image_path) as raw_img:
         # Correct mobile phone camera orientation
         img = ImageOps.exif_transpose(raw_img)
         orig_w, orig_h = img.size
         
+        # Downsample extremely high-resolution smartphone camera captures (e.g. 4000x3000)
+        # to a max dimension of 1024px. This prevents allocating >100MB RAM uncompressed
+        # on Render's 512MB limit, while maintaining 100% fine detail for 224x224.
+        max_dim = 1024
+        if orig_w > max_dim or orig_h > max_dim:
+            img.thumbnail((max_dim, max_dim), Image.Resampling.LANCZOS)
+        
         # Ensure 3-channel RGB
         if img.mode != "RGB":
             img = img.convert("RGB")
         
         # Proportion-preserving resize with padding to 224x224
-        # If square, resizes directly. If rectangular, pads margins with black (0,0,0)
         img_resized = ImageOps.pad(img, IMG_SIZE, color=(0, 0, 0))
         
         # Convert to tensor array matching predict.py
         img_array = tf.keras.utils.img_to_array(img_resized)
         img_array = tf.expand_dims(img_array, axis=0)
+        
+        # Free intermediate PIL buffers
+        gc.collect()
         
         return img_array, f"{orig_w} × {orig_h}"
 
@@ -277,6 +296,11 @@ def predict():
             "management": [],
             "severity": "Unknown"
         })
+
+        # Free temporary inference arrays from RAM
+        del processed_img
+        del raw_preds
+        gc.collect()
 
         return jsonify({
             "success": True,

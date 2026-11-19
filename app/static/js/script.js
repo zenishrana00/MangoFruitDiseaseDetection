@@ -323,6 +323,20 @@ document.addEventListener("DOMContentLoaded", () => {
         body: formData,
       });
 
+      // Verify server responded with JSON before parsing
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        const errText = await response.text();
+        console.error("Non-JSON Server Response:", errText);
+        if (response.status === 502) {
+          throw new Error("Server temporarily ran out of memory processing this image (502 Bad Gateway). Please try again or use a smaller image.");
+        } else if (response.status === 504) {
+          throw new Error("Server took too long to respond (504 Gateway Timeout). Please try again.");
+        } else {
+          throw new Error(`Server returned HTTP ${response.status} (${response.statusText}). Check server logs for details.`);
+        }
+      }
+
       const data = await response.json();
 
       if (!response.ok || !data.success) {
