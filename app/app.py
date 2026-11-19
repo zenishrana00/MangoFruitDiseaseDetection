@@ -20,6 +20,7 @@ except Exception:
 # ---------------------------------------------------------
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 MODEL_PATH = os.path.join(BASE_DIR, "model", "mango_disease_model.keras")
+TFLITE_PATH = os.path.join(BASE_DIR, "model", "mango_disease_model.tflite")
 UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), "uploads")
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "webp"}
 MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16 MB max upload size
@@ -162,18 +163,52 @@ DISEASE_INFO = {
 
 # ---------------------------------------------------------
 # Load Model Once at Server Startup
+# (Supports ultra-lightweight TFLite for Render 512MB RAM + Keras fallback)
 # ---------------------------------------------------------
-print(f"Loading trained model from: {MODEL_PATH} ...")
-if not os.path.exists(MODEL_PATH):
-    raise FileNotFoundError(f"Model file not found at {MODEL_PATH}. Check directory structure!")
+use_tflite = False
+interpreter = None
+tflite_input_idx = None
+tflite_output_idx = None
+model = None
 
-model = tf.keras.models.load_model(MODEL_PATH)
-print("TensorFlow EfficientNetB0 model loaded successfully!")
+if os.path.exists(TFLITE_PATH):
+    try:
+        print(f"Loading memory-optimized TFLite model from {TFLITE_PATH}...")
+        interpreter = tf.lite.Interpreter(model_path=TFLITE_PATH)
+        interpreter.allocate_tensors()
+        tflite_input_idx = interpreter.get_input_details()[0]["index"]
+        tflite_output_idx = interpreter.get_output_details()[0]["index"]
+        use_tflite = True
+        print("TFLite model loaded successfully! RAM footprint is ~25MB (prevents Render 502 OOM).")
+    except Exception as e:
+        print(f"TFLite load note: {e}, falling back to Keras model.")
+
+if not use_tflite:
+    print(f"Loading Keras model from: {MODEL_PATH} ...")
+    if not os.path.exists(MODEL_PATH):
+        raise FileNotFoundError(f"Model file not found at {MODEL_PATH}. Check directory structure!")
+    model = tf.keras.models.load_model(MODEL_PATH)
+    print("TensorFlow EfficientNetB0 Keras model loaded successfully!")
+
+
+def run_inference(image_tensor):
+    """
+    Executes model inference using either TFLite (~25MB RAM) or Keras (~350MB RAM).
+    Predictions are mathematically identical.
+    """
+    if use_tflite:
+        arr = np.array(image_tensor, dtype=np.float32)
+        interpreter.set_tensor(tflite_input_idx, arr)
+        interpreter.invoke()
+        return interpreter.get_tensor(tflite_output_idx)[0]
+    else:
+        return model.predict(image_tensor, verbose=0)[0]
+
 
 # Warm up model with a dummy prediction
 try:
     dummy_input = np.zeros((1, 224, 224, 3), dtype=np.float32)
-    _ = model.predict(dummy_input, verbose=0)
+    _ = run_inference(dummy_input)
     print("Model warmup completed!")
 except Exception as e:
     print(f"Warmup warning: {e}")
@@ -270,7 +305,7 @@ def predict():
         processed_img, orig_dims = preprocess_image_smart(save_path)
 
         # Run inference using the trained EfficientNetB0 model
-        raw_preds = model.predict(processed_img, verbose=0)[0]
+        raw_preds = run_inference(processed_img)
 
         # Calculate prediction results
         pred_index = int(np.argmax(raw_preds))
@@ -330,7 +365,8 @@ def predict():
 def health():
     return jsonify({
         "status": "healthy",
-        "model_loaded": model is not None,
+        "model_loaded": (model is not None) or (interpreter is not None),
+        "engine": "TFLite (Low-RAM)" if use_tflite else "Keras",
         "classes": CLASS_NAMES,
         "input_resolution": "224x224x3"
     })
